@@ -1,0 +1,323 @@
+DROP DATABASE IF EXISTS MLR1;
+
+CREATE DATABASE IF NOT EXISTS MLR1;
+USE MLR1;
+# -----------------------------------------------------------------------------
+#       TABLE : Dossier
+# -----------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS Dossier
+ (
+   referenceD INTEGER NOT NULL auto_increment ,
+   idDO INTEGER NOT NULL  ,
+   idpersonne INTEGER NOT NULL  ,
+   idpersonne_1 INTEGER NOT NULL  ,
+   dateDossierDeb DATE NOT NULL  ,
+   montantfranchise FLOAT(5,3) NOT NULL  ,
+   importance enum('Oui','Non') NOT NULL
+   , PRIMARY KEY (referenceD)
+ )
+ comment = "";
+
+# -----------------------------------------------------------------------------
+#       INDEX DE LA TABLE Dossier
+# -----------------------------------------------------------------------------
+
+
+CREATE  INDEX I_FK_Dossier_Assure
+     ON Dossier (idpersonne_1 ASC);
+
+CREATE  INDEX I_FK_Dossier_Societe
+     ON Dossier (idDO ASC);
+
+CREATE  INDEX I_FK_Dossier_Utilisateur
+     ON Dossier (idpersonne ASC);
+
+# -----------------------------------------------------------------------------
+#       TABLE : Personne
+# -----------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS Personne
+ (
+   idpersonne INTEGER NOT NULL auto_increment  ,
+   nom VARCHAR(32) NOT NULL  ,
+   prenom VARCHAR(32) NOT NULL  ,
+   adresse VARCHAR(32) NULL  ,
+   cp CHAR(6) NOT NULL  ,
+   ville VARCHAR(32) NOT NULL  ,
+   email VARCHAR(32) NOT NULL  ,
+   mdp VARCHAR(32) NOT NULL,
+   tel CHAR(10) NOT NULL  
+   , PRIMARY KEY (idpersonne)
+ )
+ comment = "";
+
+# -----------------------------------------------------------------------------
+#       TABLE : FACTURE
+# -----------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS FACTURE
+ (
+   idFact INTEGER NOT NULL auto_increment ,
+   referenceD INTEGER NOT NULL  ,
+   Designation VARCHAR(128) NOT NULL  ,
+   MontantTTC FLOAT(6,2) NOT NULL
+   , PRIMARY KEY (idFact)
+ )
+ comment = "";
+
+# -----------------------------------------------------------------------------
+#       INDEX DE LA TABLE FACTURE
+# -----------------------------------------------------------------------------
+
+
+CREATE UNIQUE INDEX I_FK_FACTURE_Dossier
+     ON FACTURE (referenceD ASC);
+
+# -----------------------------------------------------------------------------
+#       TABLE : RDV
+# -----------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS RDV
+ (
+   idRDV INTEGER NOT NULL auto_increment  ,
+   referenceD INTEGER NOT NULL  ,
+   idpersonne INTEGER NOT NULL  ,
+   dateRDV DATE NOT NULL  ,
+   heureRdv VARCHAR(32) NOT NULL  ,
+   LieuRdv VARCHAR(32) NOT NULL  ,
+   Rapport TEXT NOT NULL
+   , PRIMARY KEY (idRDV)
+ )
+ comment = "";
+
+# -----------------------------------------------------------------------------
+#       INDEX DE LA TABLE RDV
+# -----------------------------------------------------------------------------
+
+
+CREATE  INDEX I_FK_RDV_Dossier
+     ON RDV (referenceD ASC);
+
+CREATE  INDEX I_FK_RDV_Metreur
+     ON RDV (idpersonne ASC);
+
+# -----------------------------------------------------------------------------
+#       TABLE : Utilisateur
+# -----------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS Utilisateur
+ (
+   idpersonne INTEGER NOT NULL auto_increment  ,
+   poste VARCHAR(32) NOT NULL  ,
+   anciennete VARCHAR(32) NOT NULL  ,
+   nom VARCHAR(32) NOT NULL  ,
+   prenom VARCHAR(32) NOT NULL  ,
+   adresse VARCHAR(32) NULL  ,
+   cp CHAR(6) NOT NULL  ,
+   ville VARCHAR(32) NOT NULL  ,
+   email VARCHAR(32) NOT NULL  ,
+   mdp VARCHAR(32) NOT NULL
+   , PRIMARY KEY (idpersonne)
+ )
+ comment = "";
+
+# -----------------------------------------------------------------------------
+#       TABLE : TRAVAUX
+# -----------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS TRAVAUX
+ (
+  idTra INTEGER NOT NULL auto_increment ,
+   referenceD INTEGER NOT NULL  ,
+   DateDeb DATE NOT NULL  ,
+   DateFin DATE NOT NULL
+   , PRIMARY KEY (referenceD,idTra)
+ )
+ comment = "";
+
+# -----------------------------------------------------------------------------
+#       INDEX DE LA TABLE TRAVAUX
+# -----------------------------------------------------------------------------
+
+
+CREATE  INDEX I_FK_TRAVAUX_Dossier
+     ON TRAVAUX (referenceD ASC);
+
+# -----------------------------------------------------------------------------
+#       TABLE : DEVIS
+# -----------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS DEVIS
+ (
+   referenceD INTEGER NOT NULL auto_increment  ,
+   idD INTEGER NOT NULL  ,
+   devisdate DATE NOT NULL  ,
+   etat enum('Oui','Non') NOT NULL  ,
+   MontantHT FLOAT(10,2) NOT NULL  ,
+   TVA INTEGER NOT NULL  ,
+   MontantTVA FLOAT(10,2) NOT NULL
+   , PRIMARY KEY (referenceD,idD)
+ )
+ comment = "";
+
+# -----------------------------------------------------------------------------
+#       INDEX DE LA TABLE DEVIS
+# -----------------------------------------------------------------------------
+
+
+CREATE UNIQUE INDEX I_FK_DEVIS_Dossier
+     ON DEVIS (referenceD ASC);
+
+# -----------------------------------------------------------------------------
+#       TABLE : Assure
+# -----------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS Assure
+ (
+   idpersonne INTEGER NOT NULL auto_increment  ,
+   numsecu INTEGER NOT NULL  ,
+   tel CHAR(10) NOT NULL  ,
+   nom VARCHAR(32) NOT NULL  ,
+   prenom VARCHAR(32) NOT NULL  ,
+   adresse VARCHAR(32) NULL  ,
+   cp CHAR(6) NOT NULL  ,
+   ville VARCHAR(32) NOT NULL  ,
+   email VARCHAR(32) NOT NULL  ,
+   mdp CHAR(32) NOT NULL
+   , PRIMARY KEY (idpersonne)
+ )
+ comment = "";
+
+# -----------------------------------------------------------------------------
+#       TABLE : Societe
+# -----------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS Societe
+ (
+   idDO INTEGER NOT NULL auto_increment  ,
+   RAISON_SOCIALE VARCHAR(32) NOT NULL   ,
+   ADRESSE VARCHAR(32) NOT NULL  ,
+   VILLE VARCHAR(32) NOT NULL  ,
+   EMAIL VARCHAR(128) NOT NULL  ,
+   TEL CHAR(10) NOT NULL  ,
+   CP CHAR(6) NOT NULL
+   , PRIMARY KEY (idDO)
+ )
+ comment = "";
+
+# -----------------------------------------------------------------------------
+#       TABLE : Metreur
+# -----------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS Metreur
+ (
+   idpersonne INTEGER NOT NULL auto_increment ,
+   competences TEXT(60) NOT NULL  ,
+   poste VARCHAR(70) NOT NULL  ,
+   anciennete VARCHAR(50) NOT NULL  ,
+   nom VARCHAR(32) NOT NULL  ,
+   prenom VARCHAR(32) NOT NULL  ,
+   adresse VARCHAR(32) NULL  ,
+   cp CHAR(6) NOT NULL  ,
+   ville VARCHAR(32) NOT NULL  ,
+   email VARCHAR(32) NOT NULL  ,
+   mdp CHAR(32) NOT NULL
+   , PRIMARY KEY (idpersonne)
+ )
+ comment = "";
+
+# -----------------------------------------------------------------------------
+#       TABLE : suivre
+# -----------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS suivre
+ (
+   idDO INTEGER NOT NULL auto_increment ,
+   idpersonne INTEGER NOT NULL  ,
+   contenu TEXT NULL  ,
+   dateContact DATE NULL
+   , PRIMARY KEY (idDO,idpersonne)
+ )
+ comment = "";
+
+# -----------------------------------------------------------------------------
+#       INDEX DE LA TABLE suivre
+# -----------------------------------------------------------------------------
+
+
+CREATE  INDEX I_FK_suivre_Societe
+     ON suivre (idDO ASC);
+
+CREATE  INDEX I_FK_suivre_Utilisateur
+     ON suivre (idpersonne ASC);
+
+
+# -----------------------------------------------------------------------------
+#       CREATION DES REFERENCES DE TABLE
+# -----------------------------------------------------------------------------
+
+
+ALTER TABLE Dossier
+  ADD FOREIGN KEY FK_Dossier_Assure (idpersonne_1)
+      REFERENCES Assure (idpersonne) ;
+
+
+ALTER TABLE Dossier
+  ADD FOREIGN KEY FK_Dossier_Societe (idDO)
+      REFERENCES Societe (idDO) ;
+
+
+ALTER TABLE Dossier
+  ADD FOREIGN KEY FK_Dossier_Utilisateur (idpersonne)
+      REFERENCES Utilisateur (idpersonne) ;
+
+
+ALTER TABLE FACTURE
+  ADD FOREIGN KEY FK_FACTURE_Dossier (referenceD)
+      REFERENCES Dossier (referenceD) ;
+
+
+ALTER TABLE RDV
+  ADD FOREIGN KEY FK_RDV_Dossier (referenceD)
+      REFERENCES Dossier (referenceD) ;
+
+
+ALTER TABLE RDV
+  ADD FOREIGN KEY FK_RDV_Metreur (idpersonne)
+      REFERENCES Metreur (idpersonne) ;
+
+
+ALTER TABLE Utilisateur
+  ADD FOREIGN KEY FK_Utilisateur_Personne (idpersonne)
+      REFERENCES Personne (idpersonne) ;
+
+
+ALTER TABLE TRAVAUX
+  ADD FOREIGN KEY FK_TRAVAUX_Dossier (referenceD)
+      REFERENCES Dossier (referenceD) ;
+
+
+ALTER TABLE DEVIS
+  ADD FOREIGN KEY FK_DEVIS_Dossier (referenceD)
+      REFERENCES Dossier (referenceD) ;
+
+
+ALTER TABLE Assure
+  ADD FOREIGN KEY FK_Assure_Personne (idpersonne)
+      REFERENCES Personne (idpersonne) ;
+
+
+ALTER TABLE Metreur
+  ADD FOREIGN KEY FK_Metreur_Utilisateur (idpersonne)
+      REFERENCES Utilisateur (idpersonne) ;
+
+
+ALTER TABLE suivre
+  ADD FOREIGN KEY FK_suivre_Societe (idDO)
+      REFERENCES Societe (idDO) ;
+
+
+ALTER TABLE suivre
+  ADD FOREIGN KEY FK_suivre_Utilisateur (idpersonne)
+      REFERENCES Utilisateur (idpersonne) ;
