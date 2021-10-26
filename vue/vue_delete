@@ -1,0 +1,25 @@
+<h3> Suppression </h3>
+	<form method ="post" action ="">
+	<table border =0>
+
+Tableau à selectionner: <select name="table">
+	<option value ="rdv">RDV</option>
+	<option value ="dossier">Dossier</option>
+	<option value ="travaux">Travaux</option>
+	<option value ="utilisateur">Utilisateur</option>
+	<option value ="facture">Facture</option>
+	<option value ="personne">Personne</option>
+</select>
+
+Référence: <select name="id">
+	<option value ="idRDV">Numero RDV</option>
+	<option value ="referenceD">Numero Dossier</option>
+	<option value ="idTrav">Numero Travaux</option>
+	<option value ="idpersonne">Numero Personne</option>
+	<option value ="idFact">Numero Facture</option>
+	<option value ="idpersonne">Numero Personne</option>
+	</select>
+
+	ID référence <input type="number" name="idDelete">
+	<input type="submit" name="Supprimer" value="Supprimer">
+	</form>
